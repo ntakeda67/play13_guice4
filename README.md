@@ -181,8 +181,8 @@ public class HogeService {
 ```
 
 
-### 注入内容の指定
-#### BindingAnnotationでの修飾による注入内容の指定
+### 注入内容の判別
+#### BindingAnnotationでの修飾による注入内容の判別
 HogeSerivceのHogeフィールドに対してFugaを注入する。
 また、もうひとつのHoge型フィールドに対して、BidingAnnotationを用いて注入内容にFooのインスタンスを指定する。
 
@@ -237,7 +237,7 @@ public class HogeModule extends AbstractModule {
 	String anotherHogeIs = service.getAnotherHogeName();
 ```
 
-#### @Namedに記述した文字列による注入対象の指定。
+#### @Namedに記述文字列による注入対象の判別
 
 ```HogeService.java
     @Inject
@@ -266,4 +266,103 @@ public class HogeModule extends AbstractModule {
 	    .to(Foo.class);
     }
 }
+```
+
+### 注入インスタンスの作成方法指定
+#### @Providesメソッドによるインスタンスの作成
+
+```HogeService.java
+public class HogeService {
+    @Inject
+    private HogeInterface hoge;
+    
+    public String getHogeName(){
+	    return hoge.name();
+    }
+}
+```
+
+```呼び出しとインスタンス化
+	Injector injector = Guice.createInjector(new HogeModule());
+	HogeService service = injector.getInstance(HogeService.class);
+	String hogeIs = service.getHogeName();
+```
+
+```HogeModule.java
+public class HogeModule extends AbstractModule {
+    @Override
+    protected void configure(){
+    }
+
+    @Provides
+    HogeInterface provideVariableFuga(){
+	VariableFuga vFuga = new VariableFuga("Variable");
+	    return vFuga;
+    }
+}
+```
+
+```VariableHoge.java
+public class VariableFuga implements HogeInterface {
+    private String variable;
+
+    public VariableFuga(String variable){
+	this.variable = variable;
+    }
+    
+    @Override
+    public String name(){
+	return this.variable + " Fuga";
+    }
+}
+```
+
+なお、注入対象の指定方法が抽出しているとModule使用時に例外
+
+```HogeModule.java
+public class HogeModule extends AbstractModule {
+    @Override
+    protected void configure(){
+	bind(HogeInterface.class).to(Fuga.class);
+    }
+
+    @Provides
+    HogeInterface provideVariableFuga(){
+	VariableFuga vFuga = new VariableFuga("Variable");
+	return vFuga;
+    }
+}
+
+```
+
+
+```発生例外
+play.exceptions.JavaExecutionException: Unable to create injector, see the following errors:
+
+1) A binding to log.HogeInterface was already configured at binding.HogeModule.configure(HogeModule.java:15).
+at binding.HogeModule.provideVariableFuga(Unknown Source)
+
+1 error
+at play.mvc.ActionInvoker.invoke(ActionInvoker.java:228)
+at Invocation.HTTP Request(Play!)
+Caused by: com.google.inject.CreationException: Unable to create injector, see the following errors:
+
+1) A binding to log.HogeInterface was already configured at binding.HogeModule.configure(HogeModule.java:15).
+at binding.HogeModule.provideVariableFuga(Unknown Source)
+
+1 error
+at com.google.inject.internal.Errors.throwCreationExceptionIfErrorsExist(Errors.java:466)
+at com.google.inject.internal.InternalInjectorCreator.initializeStatically(InternalInjectorCreator.java:155)
+at com.google.inject.internal.InternalInjectorCreator.build(InternalInjectorCreator.java:107)
+at com.google.inject.Guice.createInjector(Guice.java:96)
+at com.google.inject.Guice.createInjector(Guice.java:73)
+at com.google.inject.Guice.createInjector(Guice.java:62)
+at controllers.ShowHoge.index(ShowHoge.java:18)
+at play.mvc.ActionInvoker.invokeWithContinuation(ActionInvoker.java:524)
+at play.mvc.ActionInvoker.invoke(ActionInvoker.java:475)
+at play.mvc.ActionInvoker.invokeControllerMethod(ActionInvoker.java:451)
+at play.mvc.ActionInvoker.invokeControllerMethod(ActionInvoker.java:446)
+at play.mvc.ActionInvoker.invoke(ActionInvoker.java:160)
+... 1 more
+
 ```

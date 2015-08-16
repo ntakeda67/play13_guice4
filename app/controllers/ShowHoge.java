@@ -18,7 +18,7 @@ public class ShowHoge extends Controller {
 	Injector injector = Guice.createInjector(new HogeModule());
 	HogeService service = injector.getInstance(HogeService.class);
 	String hogeIs = service.getHogeName();
-	String anotherHogeIs = service.getAnotherHogeName();
-	render(hogeIs, anotherHogeIs);
+	//	String anotherHogeIs = service.getAnotherHogeName();
+	render(hogeIs, "anotherHogeIs");
     }
 }

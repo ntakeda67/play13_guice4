@@ -12,14 +12,7 @@ public class HogeService {
     @Inject
     private HogeInterface hoge;
     
-    @Inject @Named("Another")
-    private HogeInterface anotherHoge;
-
     public String getHogeName(){
 	return hoge.name();
-    }
-
-    public String getAnotherHogeName(){
-	return anotherHoge.name();
     }
 }
