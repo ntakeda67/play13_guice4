@@ -317,7 +317,7 @@ public class VariableFuga implements HogeInterface {
 }
 ```
 
-なお、注入対象の指定方法が抽出しているとModule使用時に例外
+なお、注入対象の指定方法が重複しているとModule使用時に例外
 
 ```HogeModule.java
 public class HogeModule extends AbstractModule {
