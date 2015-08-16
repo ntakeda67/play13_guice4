@@ -60,11 +60,11 @@ playで依存性解決
 ```
 ## Guiceについて
 
-### DI
+### 依存性注入
 Moduleで注入するものとされるものの対応を定義する。Injectorが依存性を解決してインスタンスを生成する。
 InjectorにModuleを食わせることで、Injectorに依存性解決方法を指定する。
 
-#### 例1.
+#### 例.基本
 HogeInterfaceにFugaを注入する。
 
 ```HogeInterface.java
@@ -103,7 +103,8 @@ public class ShowHoge extends Controller {
 }
 ```
 
-#### 例2.
+### 注入方法
+#### コンストラクタインジェクション
 HogeServiceのHogeフィールドに対してFugaを注入する。
 Hogeフィールドの注入はHogeServiceのコンストラクタで行う
 
@@ -135,10 +136,55 @@ protected void configure(){
 	String hogeIs = service.getHogeName();
 ```
 
-#### 例3.
+#### フィールドインジェクション
 HogeSerivceのHogeフィールドに対してFugaを注入する。
-また、もうひとつのHoge型フィールドに対して、Fooを注入する。
-これらの注入指定をメンバ変数フィールドで行う。
+この注入指定をメンバ変数フィールドで行う。
+
+```HogeService
+public class HogeService {
+    @Inject
+    private HogeInterface hoge;
+
+    public String getHogeName(){
+	return hoge.name();
+    }
+}
+```
+
+
+```HogeModule
+public class HogeModule extends AbstractModule {
+    @Override
+    protected void configure(){
+	bind(HogeInterface.class).to(Fuga.class);
+}
+```
+
+```HogeSerivceのインスタンス化と呼び出し
+	Injector injector = Guice.createInjector(new HogeModule());
+	HogeService service = injector.getInstance(HogeService.class);
+	String hogeIs = service.getHogeName();
+```
+
+#### メソッドインジェクション
+
+```HogeService
+public class HogeService {
+    private HogeInterface hoge;
+    
+    @Inject
+    public void setHogeName(HogeInterface hoge) {
+		Logger.info("Hoge injection via method");
+        this.hoge = hoge;
+    }
+}
+```
+
+
+### 注入内容の指定
+#### BindingAnnotationでの修飾による注入内容の指定
+HogeSerivceのHogeフィールドに対してFugaを注入する。
+また、もうひとつのHoge型フィールドに対して、BidingAnnotationを用いて注入内容にFooのインスタンスを指定する。
 
 ```HogeService
 public class HogeService {
@@ -157,6 +203,18 @@ public class HogeService {
 }
 ```
 
+```AnotherHoge.java
+import com.google.inject.BindingAnnotation;
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+
+@BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+public @interface AnotherHoge {}
+```
 
 ```HogeModule
 public class HogeModule extends AbstractModule {
@@ -177,4 +235,35 @@ public class HogeModule extends AbstractModule {
 	HogeService service = injector.getInstance(HogeService.class);
 	String hogeIs = service.getHogeName();
 	String anotherHogeIs = service.getAnotherHogeName();
+```
+
+#### @Namedに記述した文字列による注入対象の指定。
+
+```HogeService.java
+    @Inject
+    private HogeInterface hoge;
+    
+    @Inject @Named("Another")
+    private HogeInterface anotherHoge;
+
+    public String getHogeName(){
+	return hoge.name();
+    }
+
+    public String getAnotherHogeName(){
+	return anotherHoge.name();
+    }
+```
+
+```HogeModule.java
+public class HogeModule extends AbstractModule {
+    @Override
+    protected void configure(){
+	bind(HogeInterface.class).to(Fuga.class);
+
+	bind(HogeInterface.class)
+	    .annotatedWith(Names.named("Another"))
+	    .to(Foo.class);
+    }
+}
 ```

@@ -1,6 +1,7 @@
 package binding;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 
 import log.HogeInterface;
 import log.Fuga;
@@ -12,7 +13,7 @@ public class HogeModule extends AbstractModule {
 	bind(HogeInterface.class).to(Fuga.class);
 
 	bind(HogeInterface.class)
-	    .annotatedWith(AnotherHoge.class)
+	    .annotatedWith(Names.named("Another"))
 	    .to(Foo.class);
     }
 }
