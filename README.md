@@ -2,7 +2,7 @@
 
 ## 気持ち
 - LoggerとかGsonとかのインスタンス生成書きたくない。勝手に作って突っ込んで欲しい。
-- play の module で落ちてくるのGuiceのバージョンがマキシマム古い。 https://www.playframework.com/modules/guice
+- play の module で落ちてくるGuiceのバージョンがマキシマム古い。 https://www.playframework.com/modules/guice
 
 ## 導入
 ### playframeworkプロジェクト側の設定
@@ -64,8 +64,7 @@ playで依存性解決
 Moduleで注入するものとされるものの対応を定義する。Injectorが依存性を解決してインスタンスを生成する。
 InjectorにModuleを食わせることで、Injectorに依存性解決方法を指定する。
 
-
-#### 例
+#### 例1.
 HogeInterfaceにFugaを注入する。
 
 ```HogeInterface.java
@@ -104,4 +103,34 @@ public class ShowHoge extends Controller {
 }
 ```
 
+#### 例2.
+HogeServiceのHogeフィールドに対してFugaを注入する。
+Hogeフィールドの注入はHogeServiceのコンストラクタで行う
 
+``` HogeService
+public class HogeService {
+    private HogeInterface hoge;
+
+    @Inject
+    public HogeService(HogeInterface hoge){
+	this.hoge = hoge;
+    }
+
+    public String getHogeName(){
+	return hoge.name();
+    }
+}
+```
+
+```Module
+@Override
+protected void configure(){
+    bind(HogeInterface.class).to(Fuga.class);
+}
+```
+
+```HogeServiceのインスタンス化と使用
+	Injector injector = Guice.createInjector(new HogeModule());
+	HogeService service = injector.getInstance(HogeService.class);
+	String hogeIs = service.getHogeName();
+```

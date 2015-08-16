@@ -1,8 +1,8 @@
 package log;
 
-public class Fuga implements HogeInterface {
+public class Foo implements HogeInterface {
     @Override
     public String name(){
-	return "Fuga";
+	return "Foo";
     }
 }
