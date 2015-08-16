@@ -1,0 +1,6 @@
+# Application dependencies
+
+require:
+    - play
+    - com.google.inject -> guice 4.0
+    
