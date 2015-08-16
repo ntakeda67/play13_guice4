@@ -129,8 +129,52 @@ protected void configure(){
 }
 ```
 
-```HogeServiceのインスタンス化と使用
+```HogeServiceのインスタンス化と呼び出し
 	Injector injector = Guice.createInjector(new HogeModule());
 	HogeService service = injector.getInstance(HogeService.class);
 	String hogeIs = service.getHogeName();
+```
+
+#### 例3.
+HogeSerivceのHogeフィールドに対してFugaを注入する。
+また、もうひとつのHoge型フィールドに対して、Fooを注入する。
+これらの注入指定をメンバ変数フィールドで行う。
+
+```HogeService
+public class HogeService {
+    @Inject
+    private HogeInterface hoge;
+    @Inject @AnotherHoge
+    private HogeInterface anotherHoge;
+
+    public String getHogeName(){
+	return hoge.name();
+    }
+
+    public String getAnotherHogeName(){
+	return anotherHoge.name();
+    }
+}
+```
+
+
+```HogeModule
+public class HogeModule extends AbstractModule {
+    @Override
+    protected void configure(){
+	bind(HogeInterface.class).to(Fuga.class);
+
+    // @AnotherHoge で修飾されているものには、Foo.classを注入する。
+	bind(HogeInterface.class)
+	    .annotatedWith(AnotherHoge.class)
+	    .to(Foo.class);
+    }
+}
+```
+
+```HogeSerivceのインスタンス化と呼び出し
+	Injector injector = Guice.createInjector(new HogeModule());
+	HogeService service = injector.getInstance(HogeService.class);
+	String hogeIs = service.getHogeName();
+	String anotherHogeIs = service.getAnotherHogeName();
 ```

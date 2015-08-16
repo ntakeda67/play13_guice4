@@ -6,14 +6,10 @@ import log.HogeInterface;
 import binding.AnotherHoge;
 
 public class HogeService {
-    private HogeInterface hoge;
-    private HogeInterface anotherHoge;
-
     @Inject
-    public HogeService(HogeInterface hoge, @AnotherHoge HogeInterface anotherHoge){
-	this.hoge = hoge;
-	this.anotherHoge = anotherHoge;
-    }
+    private HogeInterface hoge;
+    @Inject @AnotherHoge
+    private HogeInterface anotherHoge;
 
     public String getHogeName(){
 	return hoge.name();
