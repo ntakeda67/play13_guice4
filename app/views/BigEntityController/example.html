@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+	  <h3>TEST DATA</h3>
+	  <table>
+		  <tr>
+		  <th>name</th>
+		  <th>value01</th>
+		  <th>value02</th>
+		  <th>value03</th>
+		  <th>value04</th>
+		  <th>value05</th>
+		  <th>str01</th>
+		  <th>str02</th>
+		  <th>str03</th>
+		  <th>str04</th>
+		  <th>str05</th>
+		  </tr>
+		  #{list items:all, as:'e'}
+		  <tr>
+			  <td>${e.name}</td>
+			  <td>${e.value01}</td>
+			  <td>${e.value02}</td>
+			  <td>${e.value03}</td>
+			  <td>${e.value04}</td>
+			  <td>${e.value05}</td>
+			  <td>${e.str01}</td>
+			  <td>${e.str02}</td>
+			  <td>${e.str03}</td>
+			  <td>${e.str04}</td>
+			  <td>${e.str05}</td>
+		  </tr>
+		  #{/list}
+	  </table>
+	  <h3>query</h3>
+	  #{form @BigEntityController.example()}
+	  <input name="e.value01" type="number" max="100" value="${q?.value01}" placeholder="value01" />
+	  <input name="e.value02" type="number" max="100" value="${q?.value02}" placeholder="value02" />
+	  <input name="e.value03" type="number" max="100" value="${q?.value03}" placeholder="value03" />
+	  <input name="e.value04" type="number" max="100" value="${q?.value04}" placeholder="value04" />
+	  <input name="e.value05" type="number" max="100" value="${q?.value05}" placeholder="value05" />
+	  <br/>
+	  <input name="e.str01" type="text" value="${q?.str01}" placeholder="str01" />
+	  <input name="e.str02" type="text" value="${q?.str02}" placeholder="str02" />
+	  <input name="e.str03" type="text" value="${q?.str03}" placeholder="str03" />
+	  <input name="e.str04" type="text" value="${q?.str04}" placeholder="str04" />
+	  <input name="e.str05" type="text" value="${q?.str05}" placeholder="str05" />
+	  <br/>
+	  <input type="submit" value="query"/>
+	  #{/form}
+	  <h3>Result</h3>
+	  <table>
+		  <tr>
+		  <th>name</th>
+		  <th>value01</th>
+		  <th>value02</th>
+		  <th>value03</th>
+		  <th>value04</th>
+		  <th>value05</th>
+		  <th>str01</th>
+		  <th>str02</th>
+		  <th>str03</th>
+		  <th>str04</th>
+		  <th>str05</th>
+		  </tr>
+		  #{list items:result, as:'e'}
+		  <tr>
+			  <td>${e.name}</td>
+			  <td>${e.value01}</td>
+			  <td>${e.value02}</td>
+			  <td>${e.value03}</td>
+			  <td>${e.value04}</td>
+			  <td>${e.value05}</td>
+			  <td>${e.str01}</td>
+			  <td>${e.str02}</td>
+			  <td>${e.str03}</td>
+			  <td>${e.str04}</td>
+			  <td>${e.str05}</td>
+		  </tr>
+		  #{/list}
+	  </table>
+  </body>
+</html>

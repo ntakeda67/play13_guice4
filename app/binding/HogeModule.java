@@ -13,15 +13,5 @@ public class HogeModule extends AbstractModule {
     @Override
     protected void configure(){
 	bind(HogeInterface.class).to(Fuga.class);
-	//
-	//	bind(HogeInterface.class)
-	//  .annotatedWith(Names.named("Another"))
-	//  .to(Foo.class);
-    }
-
-    @Provides
-    HogeInterface provideVariableFuga(){
-	VariableFuga vFuga = new VariableFuga("Variable");
-	return vFuga;
     }
 }

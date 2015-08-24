@@ -1,0 +1,46 @@
+<!DOCTYPE>
+<html>
+	<head>
+	</head>
+	<body>
+		<ul>
+			#{list items:parentList, as:'parent'}
+			<li>
+				${parent.id}: ${parent.name}
+				<ul>
+					#{list items:parent.children, as:'child'}
+					<li>
+						${child.name}
+					</li>
+					#{/list}
+				</ul>
+			</li>
+			#{/list}
+		</ul>
+		<label for="parent">親の名前</label>
+		<input id="parent" name="parent" type="text"></input>
+		<label for="numOfChild">子の数</label>
+		<input id="numOfChild" name="numOfChild" type="number"></input>
+		<button id="add">追加</button>
+	</body>
+	<div>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('button#add').click(function(){
+				var newParentName = $('input#parent').val();
+				var numOfChild = $('input#numOfChild').val();
+				$.ajax({
+					dataType: 'json',
+					url: './add',
+					data: {
+						parentName: newParentName,
+						numOfChild: numOfChild
+					}
+				});
+			});
+		});
+		</script>
+	</div>
+	
+</html>
